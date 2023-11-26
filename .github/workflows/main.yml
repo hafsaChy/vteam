@@ -1,5 +1,8 @@
-name: hello-world
-on: push
+name: CI
+on:
+  push:
+    branches:
+      - '*'
 jobs:
   my-job:
     runs-on: ubuntu-latest
