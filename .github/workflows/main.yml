@@ -12,3 +12,6 @@ jobs:
     steps:
       - name: my-step
         run: echo "Hello World!"
+        
+      - name: Install frontend dependencies
+        run: cd client && npm install
