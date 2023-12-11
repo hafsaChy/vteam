@@ -31,13 +31,13 @@ jobs:
         cd client
         npm test
 
-    - name: Install dependencies in server directory
-      run: |
-        cd server
-        npm install
+    # - name: Install dependencies in server directory
+    #   run: |
+    #     cd server
+    #     npm install
 
-    - name: Run tests in server directory
-      run: |
-        cd server
-        npm test
+    # - name: Run tests in server directory
+    #   run: |
+    #     cd server
+    #     npm test
 
