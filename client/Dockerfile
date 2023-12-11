@@ -1,20 +1,24 @@
-# Use an official Node.js runtime as the base image
-FROM node:18
+# Use an official Node.js 18 image as the base image
+FROM node
 
-# Set the working directory inside the container
+# Set the working directory in the container
 WORKDIR /client
 
-# Copy package.json and package-lock.json to the container
-COPY package*.json ./
+# Copy the 'package.json' file into the container
+COPY package.json . 
 
-# Install the project dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends nano
+
+# Install dependencies
 RUN npm install
 
-# Copy the rest of your application code to the container
 COPY . .
 
-# Expose a port if your application listens on a specific port
-# EXPOSE 3000
+# Expose port 3000
+EXPOSE 3000
 
-# Start your application
+# Set the command to run the development server
 CMD ["npm", "start"]
+
+
+
