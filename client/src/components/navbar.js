@@ -14,6 +14,9 @@ function Navbar() {
         <li>
           <Link to="/login">Login</Link>
         </li>
+        <li>
+        <Link to="/scootermap">Scooter Map</Link>
+        </li>
       </ul>
     </div>
   );

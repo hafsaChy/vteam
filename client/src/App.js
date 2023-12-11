@@ -7,6 +7,7 @@ import About from './pages/about';
 import Login from './pages/login';
 import Navbar from './components/navbar';
 import Footer from './components/footer';
+import ScooterMap from './pages/scootermap';
 
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
           <Route path="/home" element={<Home/>}/>
           <Route path="/about" element={<About/>}/>
           <Route path="/login" element={<Login/>}/>
+          <Route path="/scootermap" element={<ScooterMap />}/>
         </Routes>
       </BrowserRouter>
       <Footer/>
