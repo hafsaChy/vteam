@@ -154,3 +154,5 @@ app.use('/elcyckel/v1/scooters', scooterRoutes);
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
+
+module.exports = app;
