@@ -2,11 +2,11 @@
   "name": "server",
   "version": "1.0.0",
   "description": "",
-  "main": "app/index.js",
+  "main": "index.js",
   "scripts": {
-    "test": "mocha app/tests/*.js",
-    "start": "node app/index.js",
-    "dev": "nodemon app/index.js"
+    "test": "mocha test/server/*.js",
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   },
   "keywords": [],
   "author": "",
