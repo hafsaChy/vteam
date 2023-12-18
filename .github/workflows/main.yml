@@ -11,7 +11,19 @@ jobs:
     
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [14.x]
+
+    services:
+      mariadb:
+        image: mariadb
+        env:
+          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD}}
+          MYSQL_DATABASE: test_elcyckel
+          MYSQL_USER: ${{ secrets.MYSQL_USER}}
+          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD}}
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
     - uses: actions/checkout@v3
@@ -29,7 +41,7 @@ jobs:
     - name: Run tests in client directory
       run: |
         cd client
-        # npm test
+        npm test
 
     - name: Install dependencies in server directory
       run: |
@@ -39,5 +51,4 @@ jobs:
     - name: Run tests in server directory
       run: |
         cd server
-        # npm test
-
+        npm test
