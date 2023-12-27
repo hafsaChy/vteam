@@ -25,7 +25,6 @@ describe('City Routes', function () {
             user: process.env.MYSQL_USER,
             password: process.env.MYSQL_PASSWORD,
             database: process.env.MYSQL_DATABASE,
-            database: test_elcyckel,
             connectionLimit: 20,
             connectTimeout: 30000,
             multipleStatements: true,
