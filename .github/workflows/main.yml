@@ -15,3 +15,4 @@ jobs:
         echo "MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}"
         echo "MYSQL_USER: ${{ secrets.MYSQL_USER }}"
         echo "MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}"
+
