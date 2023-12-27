@@ -28,6 +28,12 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: Debug Environment Variables
+      run: |
+        echo "MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}"
+        echo "MYSQL_USER: ${{ secrets.MYSQL_USER }}"
+        echo "MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}"
+
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
@@ -52,10 +58,3 @@ jobs:
       run: |
         cd server
         npm test
-      
-    - name: Debug Environment Variables
-      run: |
-        echo "MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}"
-        echo "MYSQL_USER: ${{ secrets.MYSQL_USER }}"
-        echo "MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}"
-
