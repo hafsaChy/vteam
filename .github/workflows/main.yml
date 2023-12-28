@@ -34,6 +34,12 @@ jobs:
         echo "MYSQL_USER: ${{ secrets.MYSQL_USER }}"
         echo "MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}"
 
+    - name: Wait for MariaDB to initialize
+      run: sleep 30  # Adjust the sleep duration based on the MariaDB initialization time
+
+    - name: Check MariaDB Health
+      run: docker exec -it mariadb mysqladmin ping -hlocalhost -uroot -p"${{ secrets.MYSQL_ROOT_PASSWORD }}"
+
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
