@@ -28,14 +28,20 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: Wait for MariaDB to initialize
+      run: sleep 120  # Increase the sleep duration to 2 minutes or more
+
+    - name: Check MariaDB Status
+      run: docker ps -a
+
+    - name: Check MariaDB Logs
+      run: docker logs mariadb
+
     - name: Debug Environment Variables
       run: |
         echo "MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}"
         echo "MYSQL_USER: ${{ secrets.MYSQL_USER }}"
         echo "MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}"
-
-    - name: Wait for MariaDB to initialize
-      run: sleep 180  # Adjust the sleep duration based on the MariaDB initialization time
 
     - name: Check MariaDB Health
       run: docker exec -it mariadb mysqladmin ping -hlocalhost -uroot -p"${{ secrets.MYSQL_ROOT_PASSWORD }}"
