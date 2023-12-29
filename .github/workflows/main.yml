@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - '*'
+
+jobs:
+  my-job:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [14.x]
+
+    services:
+      mariadb:
+        image: mariadb
+        env:
+          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          MYSQL_DATABASE: test_elcyckel
+          MYSQL_USER: ${{ secrets.MYSQL_USER }}
+          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+    
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Wait for MariaDB to initialize
+      run: sleep 120  # Increase the sleep duration to 2 minutes or more
+
+    - name: Check MariaDB Status
+      run: docker ps -a
+
+    - name: Check MariaDB Logs
+      run: docker logs mariadb
+
+    - name: Debug Environment Variables
+      run: |
+        echo "MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}"
+        echo "MYSQL_USER: ${{ secrets.MYSQL_USER }}"
+        echo "MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}"
+
+    - name: Check MariaDB Health
+      run: docker exec -it mariadb mysqladmin ping -hlocalhost -uroot -p"${{ secrets.MYSQL_ROOT_PASSWORD }}"
+
+    - name: Debug Database Connection
+      run: |
+        mysql -hlocalhost -uroot -p"${{ secrets.MYSQL_ROOT_PASSWORD }}" -e "SHOW DATABASES;"
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Install dependencies in client directory
+      run: |
+        cd client
+        npm install
+
+    - name: Run tests in client directory
+      run: |
+        cd client
+        npm test
+
+    - name: Install dependencies in server directory
+      run: |
+        cd server
+        npm install
+
+    - name: Run tests in server directory
+      run: |
+        cd server
+        npm test

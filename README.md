@@ -13,3 +13,7 @@ It builds the neccessary containers and then network starts up. First, mariadb s
 ```
 ./setup.bash down
 ```
+## To down the docker containers
+```
+./setup.bash down
+```
