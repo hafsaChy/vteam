@@ -1,0 +1,45 @@
+version: "3.8"
+
+volumes:
+  mariadb-data:
+
+services:
+
+  server:
+    depends_on:
+      - mariadb
+    build:
+      context: ./server
+    volumes:
+      - ./server:/app
+    ports:
+      - 3050:3050
+    restart: on-failure
+    environment:
+      DB_PASS: P@ssw0rd #${USER_PASS}
+      DB_HOST: mariadb
+
+  mariadb:
+    image: mariadb
+    restart: always
+    volumes:
+      - mariadb-data:/var/lib/mariadb
+      - ./db:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_ROOT_PASSWORD: P@ssw0rd
+      MYSQL_DATABASE: elcyckel
+      MYSQL_USER: vteam_user
+      MYSQL_PASSWORD: P@ssw0rd
+
+  client:
+    build:
+      context: ./client
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./client/src:/client/src
+    depends_on:
+      - server
+    environment: 
+      - WATCHPACK_POLLING=true
+
