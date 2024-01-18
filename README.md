@@ -53,7 +53,10 @@ Ensure you have the following tools installed:
 
 ```git clone https://github.com/hafsaChy/vteam.git```
 
-2. Build and start the Docker containers:
+2.  Then go to the project directory:
+   ```cd vteam```
+
+3. Build and start the Docker containers:
 ```bash setup.bash up```
 or 
 ```./setup.bash up```
