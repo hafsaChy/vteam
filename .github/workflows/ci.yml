@@ -36,7 +36,17 @@ jobs:
         cd server
         npm install
 
-    - name: Run tests in server directory
+    - name: Lint server routes
       run: |
         cd server
-        # npm test
+        npm run lint -- routes/*.js
+
+    - name: Install dependencies in bike directory
+      run: |
+        cd bike
+        pip install pylint
+
+    - name: Run pylint for bike
+      run: |
+        cd bike
+        pylint bike
