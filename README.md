@@ -7,7 +7,7 @@ stay in vteam repo and run
 ```
 ./setup.bash up
 ```
-It builds the neccessary containers and then network starts up. First, mariadb starts and then server starts. The express server has the url ```http://localhost:3050/```. The client url is ```http://localhost:3000/```.
+It builds the neccessary containers and then network starts up. First, mariadb starts and then server starts. The express server has the url ```http://localhost:3050/```. The client url is ```http://localhost:3000/``` and the scooter app can be seen ```http://localhost:3003/```.
 
 ## To shut down the docker containers and network
 ```
