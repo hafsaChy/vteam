@@ -188,6 +188,7 @@ class Scooter:
             "battery_level": self.battery_percentage,
         }
         try:
+            # pylint: disable=W3101
             update_response = requests.put(update_url, json=update_data)
             if update_response.status_code == 200:
                 print("")
@@ -214,6 +215,7 @@ class Scooter:
 
         receipt_url = "http://localhost:3050/elcyckel/v1/receipt"
         try:
+            # pylint: disable=W3101
             receipt_response = requests.post(receipt_url, json=receipt_data)
             if receipt_response.status_code == 200:
                 print("")
@@ -235,6 +237,7 @@ def main():
     user_id = int(sys.argv[2])
 
     api_url = "http://localhost:3050/elcyckel/v1/scooters"
+    # pylint: disable=W3101
     response = requests.get(api_url)
 
     if response.status_code == 200:
