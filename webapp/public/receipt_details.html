@@ -1,0 +1,59 @@
+<!-- receipt_details.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../style/style.css">
+    <title>Receipt Details</title>
+</head>
+
+<body>
+    <header>
+        <h2><h1>Receipt details</h1></h2>
+    </header>
+
+    <div class="receipt-details-container" id="receipt-details"></div>
+
+    <footer>
+        <p>&copy; 2024 Your Website. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async function () {
+            // Hämta kvitton från servern
+            try {
+                const response = await fetch('http://localhost:3050/elcyckel/v1/receipt');
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch receipts. Status code: ${response.status}`);
+                }
+
+                const allReceipts = await response.json();
+
+                // Hämta det senaste kvittot
+                const latestReceipt = allReceipts[allReceipts.length - 1];
+
+                // Visa det senaste kvittodetaljerna på sidan
+                const receiptDetailsContainer = document.getElementById('receipt-details');
+                receiptDetailsContainer.innerHTML = `<h1>Receipt details</h1>`;
+
+                if (latestReceipt) {
+                    const receiptInfo = `
+                        <p>User ID: ${latestReceipt.user_id}</p>
+                        <p>Scooter ID: ${latestReceipt.scooter_id}</p>
+                        <p>Amount: ${latestReceipt.amount}</p>
+                        <p>Distance Traveled: ${latestReceipt.distance_in_km} km</p>
+                    `;
+                    receiptDetailsContainer.innerHTML += receiptInfo;
+                } else {
+                    console.error("No receipts found.");
+                }
+            } catch (error) {
+                console.error(`An error occurred: ${error.message}`);
+            }
+        });
+    </script>
+</body>
+
+</html>
