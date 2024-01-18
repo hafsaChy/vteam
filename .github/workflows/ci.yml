@@ -39,7 +39,7 @@ jobs:
     - name: Lint server routes
       run: |
         cd server
-        npm run lint -- /app/routes/*.js
+        npm run lint -- /routes/*.js
 
     - name: Install dependencies in bike directory
       run: |
