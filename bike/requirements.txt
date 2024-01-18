@@ -1,0 +1,7 @@
+# requirements.txt
+
+# Include any dependencies for tests
+mock==4.0.3
+pytest
+requests==2.26.0
+pylint==2.11.1

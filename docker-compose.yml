@@ -1,0 +1,80 @@
+version: "3.8"
+
+volumes:
+  mariadb-data:
+
+services:
+
+  server:
+    container_name: server
+    depends_on:
+      - mariadb
+    build:
+      context: ./server
+    volumes:
+      - ./server:/app
+    ports:
+      - 3050:3050
+    restart: on-failure
+    environment:
+      DB_PASS: P@ssw0rd #${USER_PASS}
+      DB_HOST: mariadb
+    command: >
+      sh -c "npm run lint -- /app/routes/*.js && npm test && npm start"
+    tty: true  # Enable pseudo-TTY to see colors and formatting in the output
+
+  mariadb:
+    container_name: database
+    image: mariadb
+    restart: always
+    volumes:
+      - mariadb-data:/var/lib/mariadb
+      - ./db:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_ROOT_PASSWORD: P@ssw0rd
+      MYSQL_DATABASE: elcyckel
+      MYSQL_USER: vteam_user
+      MYSQL_PASSWORD: P@ssw0rd
+      MYSQL_TEST_DATABASE: test_elcyckel
+      MYSQL_TEST_USER: test
+      MYSQL_TEST_PASSWORD: P@ssw0rd
+
+
+  client:
+    container_name: client
+    build:
+      context: ./client
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./client/src:/client/src
+    depends_on:
+      - server
+    environment: 
+      - WATCHPACK_POLLING=true
+
+  webapp:
+      container_name: webapp
+      build:
+        context: ./webapp
+      ports:
+        - "3003:3003"
+      volumes:
+        - ./webapp:/usr/src/app
+      depends_on:
+        - server
+
+  bike:
+    container_name: bike
+    build:
+      context: ./bike
+    volumes:
+      - ./bike:/app/bike 
+    depends_on:
+      - server
+      - mariadb
+    command: >
+      sh -c "pylint bike && python3 -m unittest bike.test.test_cykel"
+    tty: true
+
+  
