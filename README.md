@@ -50,7 +50,7 @@ Ensure you have the following tools installed:
 
 1. Clone this repository to your local machine:
 
-```git clone https://github.com/hafsaChy/vteam.git <!-- cd server -->```
+```git clone https://github.com/hafsaChy/vteam.git```
 
 2. Build and start the Docker containers:
 ```bash setup.bash up```
@@ -60,6 +60,8 @@ or
 It builds the neccessary containers and then network starts up. First, mariadb starts and then server starts. The express server has the url ```http://localhost:3050/```. The client url is ```http://localhost:3000/``` and webapp can be seen in ```http://localhost:3003/```.
 
 ## To shut down the docker containers and network
+```bash setup.bash down```
+or 
 ```
 ./setup.bash down
 ```
