@@ -18,6 +18,7 @@ Make sure you have the following tools installed on your machine:
 1. Clone this repository to your local machine:
 
    ```git clone https://github.com/hafsaChy/vteam.git```
+2.  Then go to the project directory:
    ```cd vteam```
 
 3. Build and start the Docker containers:
