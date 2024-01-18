@@ -7,6 +7,7 @@ This project is a part of the course 'vteam' at Blekinge Tekniska Högskolan. Th
 - [Components](#components)
 - [Getting Started](#getting-started)
 - [Running the Project](#running-the-project)
+- [To shut down the docker containers and network](#to-shut-down-the-docker-containers-and-network)
 
 ## Project Overview
 
