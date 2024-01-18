@@ -1,0 +1,35 @@
+name: Docker Compose CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      docker:
+        image: docker:20.10.8
+        ports:
+          - 3050:3050
+        options: --entrypoint=bash
+        env:
+          DOCKER_CLI_ASK_PASS: 0
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Build and run Docker Compose
+      run: |
+        docker-compose -f ci.yml up -d
+        docker-compose -f ci.yml exec server sh -c "npm run lint -- /app/routes/*.js && npm test && npm start"
+    
+    - name: Run tests
+      run: |
+        docker-compose -f ci.yml exec server npm test
+
+    - name: Stop Docker Compose
+      run: docker-compose -f ci.yml down
