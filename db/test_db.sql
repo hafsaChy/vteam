@@ -1,5 +1,7 @@
+-- Drop database if exists
 DROP DATABASE IF EXISTS test_elcyckel;
 
+-- create database
 CREATE DATABASE test_elcyckel;
 
 -- Use elcykel database
