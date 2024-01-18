@@ -1,5 +1,0 @@
--- DROP TABLE IF EXISTS scooters;
--- DROP TABLE IF EXISTS reciepts;
--- DROP TABLE IF EXISTS admins;
--- DROP TABLE IF EXISTS users;
--- DROP TABLE IF EXISTS cities;
