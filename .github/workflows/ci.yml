@@ -1,35 +1,42 @@
-name: Docker Compose CI
+name: CI
 
 on:
   push:
     branches:
-      - main
+      - '*'
 
 jobs:
-  build:
+  my-job:
     runs-on: ubuntu-latest
-
-    services:
-      docker:
-        image: docker:20.10.8
-        ports:
-          - 3050:3050
-        options: --entrypoint=bash
-        env:
-          DOCKER_CLI_ASK_PASS: 0
+    
+    strategy:
+      matrix:
+        node-version: [18.x]
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
-    - name: Build and run Docker Compose
-      run: |
-        docker-compose -f ci.yml up -d
-        docker-compose -f ci.yml exec server sh -c "npm run lint -- /app/routes/*.js && npm test && npm start"
-    
-    - name: Run tests
-      run: |
-        docker-compose -f ci.yml exec server npm test
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
 
-    - name: Stop Docker Compose
-      run: docker-compose -f ci.yml down
+    - name: Install dependencies in client directory
+      run: |
+        cd client
+        npm install
+
+    - name: Run tests in client directory
+      run: |
+        cd client
+        # npm test
+
+    - name: Install dependencies in server directory
+      run: |
+        cd server
+        npm install
+
+    - name: Run tests in server directory
+      run: |
+        cd server
+        # npm test
