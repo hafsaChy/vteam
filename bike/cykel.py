@@ -177,7 +177,7 @@ class Scooter:
 
         try:
             # Fetch current scooter information from the API
-            scooter_info_response = requests.get(scooter_info_url)
+            scooter_info_response = requests.get(scooter_info_url) # pylint: disable=W3101
             if scooter_info_response.status_code == 200:
                 scooter_info = scooter_info_response.json()
                 current_scooter_status = scooter_info.get("scooter_status", "Unknown")
@@ -202,7 +202,7 @@ class Scooter:
 
         try:
             # Update scooter data with the new status
-            update_response = requests.put(update_url, json=update_data)
+            update_response = requests.put(update_url, json=update_data) # pylint: disable=W3101
             if update_response.status_code == 200:
                 print(f"Scooter data updated successfully. New status: {current_scooter_status}")
             else:
@@ -227,7 +227,7 @@ class Scooter:
 
         receipt_url = "http://localhost:3050/elcyckel/v1/receipt"
         try:
-            receipt_response = requests.post(receipt_url, json=receipt_data)
+            receipt_response = requests.post(receipt_url, json=receipt_data) # pylint: disable=W3101
             if receipt_response.status_code == 200:
                 print("")
             else:
@@ -241,7 +241,7 @@ def is_scooter_activated(scooter_id):
     is_scooter_activated method
     """
     api_url = f"http://localhost:3050/elcyckel/v1/scooters/{scooter_id}"
-    response = requests.get(api_url)
+    response = requests.get(api_url) # pylint: disable=W3101
 
     if response.status_code == 200:
         scooter_data = response.json()
@@ -259,7 +259,7 @@ def main():
         """
         activate_all_scooters method
         """
-        response = requests.get("http://localhost:3050/elcyckel/v1/scooters")
+        response = requests.get("http://localhost:3050/elcyckel/v1/scooters") # pylint: disable=W3101
 
         if response.status_code == 200:
             scooters_data = response.json()
@@ -283,7 +283,7 @@ def main():
             'scooter_hire': 'Activated',
         }
 
-        response = requests.put(url, headers=headers, json=data)
+        response = requests.put(url, headers=headers, json=data) # pylint: disable=W3101
 
         if response.status_code == 200:
             print(f"Scooter {scooter_id} activated.")
@@ -294,7 +294,7 @@ def main():
         """
         run_all_scooters method
         """
-        response = requests.get("http://localhost:3050/elcyckel/v1/scooters")
+        response = requests.get("http://localhost:3050/elcyckel/v1/scooters") # pylint: disable=W3101
 
         if response.status_code == 200:
             scooters_data = response.json()
@@ -321,7 +321,7 @@ def main():
             return
 
         api_url = f"http://localhost:3050/elcyckel/v1/scooters/{scooter_id}"
-        response = requests.get(api_url)
+        response = requests.get(api_url) # pylint: disable=W3101
 
         if response.status_code == 200:
             scooter_data = response.json()
@@ -365,7 +365,7 @@ def main():
             sys.exit(1)
 
         api_url = "http://localhost:3050/elcyckel/v1/scooters"
-        response = requests.get(api_url)
+        response = requests.get(api_url) # pylint: disable=W3101
 
         if response.status_code == 200:
             scooters_data = response.json()
@@ -374,9 +374,10 @@ def main():
                 if scooter['scooter_hire'] == 'Activated'
             ]
             selected_scooter = next(
-                (scooter for scooter in using_scooters if scooter['scooter_id'] == scooter_id_to_find),
+                (s for s in using_scooters if s['scooter_id'] == scooter_id_to_find),
                 None
             )
+
 
             if selected_scooter:
                 scooter = Scooter(
