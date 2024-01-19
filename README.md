@@ -61,7 +61,10 @@ Ensure you have the following tools installed:
 or 
 ```./setup.bash up```
 
-It builds the neccessary containers and then network starts up. First, mariadb starts and then server starts. The express server has the url ```http://localhost:3050/```. The client url is ```http://localhost:3000/``` and webapp can be seen in ```http://localhost:3003/```.
+It builds the neccessary containers and then network starts up. First, mariadb starts and then server starts.
+The express server has the url ```http://localhost:3050/```. 
+The client url is ```http://localhost:3000/```.
+The webapp can be seen in ```http://localhost:3003/```.
 
 ## To shut down the docker containers and network
 ```bash setup.bash down```
