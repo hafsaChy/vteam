@@ -34,7 +34,6 @@ class Scooter:
             {"north": 56.03447, "south": 55.9999, "east": 12.7550456, "west": 12.7020456},
             {"north": 55.604107, "south": 55.614107, "east": 13.086877, "west": 13.0},
             {"north": 55.594107, "south": 55.554107, "east": 13.086877, "west": 13.0},
-            # Add more special zones as needed
         ]
 
     def __init__(self, scooter_id, battery_percentage=100):
@@ -69,7 +68,6 @@ class Scooter:
                 and zone["west"] <= longitude <= zone["east"]
             ):
                 self.current_zone = "SpecialZone"
-                print("parkerade i förbjuden parkering")
             else:
                 self.current_zone = None
         for zone in self.parking_ZONES:
@@ -80,7 +78,6 @@ class Scooter:
                 self.fri_zone = None
             else:
                 self.fri_zone = "SpecialZone"
-                print("parkerade utan för parkering zone")
 
 
     def start(self, customer):
@@ -115,7 +112,6 @@ class Scooter:
                 self.total_cost += int(usage_cost) + self.START_COST
                 self.log[-1]["trip_cost"] = int(usage_cost) + self.START_COST
 
-                # Add receipt functionality
                 self.send_receipt()
                 print("Åkturen avslutad")
 
@@ -137,14 +133,11 @@ class Scooter:
                 self.latitude += random.uniform(-0.001, 0.001)
                 self.longitude += random.uniform(-0.001, 0.001)
 
-                # Estimate distance traveled based on the battery level
-                distance = 1  # Adjust this constant factor for a rough estimation
+                distance = 1
                 self.distance_in_km += distance
 
-                # Update scooter data for all scooter_id values
                 self.update_scooter_data()
 
-                # Print the status line and overwrite the previous line
                 print(f"\n\rBatteri: {self.battery_percentage}%,\n"
                     f"Hastighet: {self.speed} m/s,\n"
                     f"Position: ({self.latitude}, {self.longitude}),\n"
@@ -157,7 +150,7 @@ class Scooter:
             if self.battery_percentage == 0:
                 print(f"\nScooter {self.scooter_id} har inget batteri kvar. Stanna och ladda.")
 
-            # Update scooter data even when the scooter stops
+
             self.update_scooter_data()
 
     # pylint: disable=R0913
@@ -180,25 +173,44 @@ class Scooter:
         """
         update_scooter_data method
         """
+        scooter_info_url = f"http://localhost:3050/elcyckel/v1/scooters/{self.scooter_id}"
+
+        try:
+            # Fetch current scooter information from the API
+            scooter_info_response = requests.get(scooter_info_url)
+            if scooter_info_response.status_code == 200:
+                scooter_info = scooter_info_response.json()
+                current_scooter_status = scooter_info.get("scooter_status", "Unknown")
+            else:
+                print(f"Failed to fetch scooter information for scooter_id {self.scooter_id}. "
+                    f"Status code: {scooter_info_response.status_code}")
+                return
+        except Exception as exception: # pylint: disable=W0703
+            print(f"An error occurred while fetching scooter information: {exception}")
+            print(f"Exception type: {type(exception)}")
+            return
+
+        # Update data with the fetched scooter status
         update_url = f"http://localhost:3050/elcyckel/v1/scooters/{self.scooter_id}"
         update_data = {
             "scooter_id": self.scooter_id,
             "latitude": str(self.latitude),
             "longitude": str(self.longitude),
             "battery_level": self.battery_percentage,
+            "scooter_status": current_scooter_status,
         }
+
         try:
-            # pylint: disable=W3101
+            # Update scooter data with the new status
             update_response = requests.put(update_url, json=update_data)
             if update_response.status_code == 200:
-                print("")
+                print(f"Scooter data updated successfully. New status: {current_scooter_status}")
             else:
-                print(f"Failed to update scooter data for scooter_id {self.scooter_id}."
+                print(f"Failed to update scooter data for scooter_id {self.scooter_id}. "
                     f"Status code: {update_response.status_code}")
-        except Exception as exception:  # pylint: disable=W0703
+        except Exception as exception: # pylint: disable=W0703
             print(f"An error occurred while updating scooter data: {exception}")
             print(f"Exception type: {type(exception)}")
-
 
     def send_receipt(self):
         """
@@ -215,61 +227,178 @@ class Scooter:
 
         receipt_url = "http://localhost:3050/elcyckel/v1/receipt"
         try:
-            # pylint: disable=W3101
             receipt_response = requests.post(receipt_url, json=receipt_data)
             if receipt_response.status_code == 200:
                 print("")
             else:
                 print(f"Failed to send receipt for user_id {self.customer}."
                       f"Status code: {receipt_response.status_code}")
-        except Exception as exception:  # pylint: disable=W0703
+        except Exception as exception: # pylint: disable=W0703
             print(f"An error occurred while sending the receipt: {exception}")
 
-def main():
+def is_scooter_activated(scooter_id):
     """
-    Main function to start and simulate a scooter ride.
+    is_scooter_activated method
     """
-    if len(sys.argv) < 3:
-        print("Please provide both scooter_id and user_id as command-line arguments.")
-        sys.exit(1)
-
-    scooter_id_to_find = int(sys.argv[1])
-    user_id = int(sys.argv[2])
-
-    api_url = "http://localhost:3050/elcyckel/v1/scooters"
-    # pylint: disable=W3101
+    api_url = f"http://localhost:3050/elcyckel/v1/scooters/{scooter_id}"
     response = requests.get(api_url)
 
     if response.status_code == 200:
-        scooters_data = response.json()
-        using_scooters = [
-            scooter for scooter in scooters_data
-            if scooter['scooter_hire'] == 'Activated'
-        ]
-        selected_scooter = next(
-            (scooter for scooter in using_scooters if scooter['scooter_id'] == scooter_id_to_find),
-            None
-        )
+        scooter_data = response.json()
+        return scooter_data.get('scooter_hire') == 'Activated'
+    print(f"Failed to fetch scooter data for scooter {scooter_id}.")
+    print(f" Status code: {response.status_code}")
+    return False
 
-        if selected_scooter:
+# pylint: disable=R0915
+def main():
+    """
+    main function
+    """
+    def activate_all_scooters():
+        """
+        activate_all_scooters method
+        """
+        response = requests.get("http://localhost:3050/elcyckel/v1/scooters")
+
+        if response.status_code == 200:
+            scooters_data = response.json()
+
+            for scooter in scooters_data:
+                scooter_id = scooter.get('scooter_id')
+                if scooter_id:
+                    activate_scooter(scooter_id)
+
+    def activate_scooter(scooter_id):
+        """
+        activate_scooter method
+        """
+        url = f"http://localhost:3050/elcyckel/v1/scooters/{scooter_id}/update-hire"
+
+        headers = {
+            'Content-Type': 'application/json',
+        }
+
+        data = {
+            'scooter_hire': 'Activated',
+        }
+
+        response = requests.put(url, headers=headers, json=data)
+
+        if response.status_code == 200:
+            print(f"Scooter {scooter_id} activated.")
+        else:
+            print(f"Failed to activate scooter {scooter_id}. Status code: {response.status_code}")
+
+    def run_all_scooters():
+        """
+        run_all_scooters method
+        """
+        response = requests.get("http://localhost:3050/elcyckel/v1/scooters")
+
+        if response.status_code == 200:
+            scooters_data = response.json()
+
+            threads = []
+            user_id = 1
+
+            for scooter in scooters_data:
+                scooter_id = scooter.get('scooter_id')
+                if scooter_id and scooter['scooter_hire'] == 'Activated':
+                    thread = threading.Thread(target=run_scooter, args=(scooter_id, user_id))
+                    threads.append(thread)
+                    thread.start()
+                    user_id += 1
+            for thread in threads:
+                thread.join()
+
+    def run_scooter(scooter_id, user_id):
+        """
+        run_scooter method
+        """
+        if not is_scooter_activated(scooter_id):
+            print(f"Scooter {scooter_id} is not activated. Cannot start the ride.")
+            return
+
+        api_url = f"http://localhost:3050/elcyckel/v1/scooters/{scooter_id}"
+        response = requests.get(api_url)
+
+        if response.status_code == 200:
+            scooter_data = response.json()
             scooter = Scooter(
-                scooter_id=selected_scooter['scooter_id'],
-                battery_percentage=selected_scooter['battery_level']
+                scooter_id=scooter_data['scooter_id'],
+                battery_percentage=scooter_data['battery_level']
             )
             scooter.report_position(
-                latitude=float(selected_scooter['latitude']),
-                longitude=float(selected_scooter['longitude'])
+                latitude=float(scooter_data['latitude']),
+                longitude=float(scooter_data['longitude'])
             )
-            scooter.start(customer=user_id)  # Pass user_id as customer
+            scooter.start(customer=user_id)
 
             sim_thread = threading.Thread(target=scooter.simulate_ride)
             sim_thread.start()
 
-            input("Tryck Enter för att avsluta åkturen\n")
+            input("Press Enter to end the ride\n")
             scooter.stop_simulation = True
             sim_thread.join()
 
             scooter.stop()
+        else:
+            print(f"Failed to fetch scooter data for scooter {scooter_id}.")
+            print(f"Status code: {response.status_code}")
+
+    if __name__ == "__main__":
+        if len(sys.argv) > 1 and sys.argv[1] == "ride_all":
+            activate_all_scooters()
+            run_all_scooters()
+            sys.exit(0)
+
+        if len(sys.argv) < 3:
+            print("Please provide both scooter_id and user_id as command-line arguments.")
+            sys.exit(1)
+
+        scooter_id_to_find = int(sys.argv[1])
+        user_id = int(sys.argv[2])
+
+        if not is_scooter_activated(scooter_id_to_find):
+            print(f"Scooter {scooter_id_to_find} is not activated. Cannot start the ride.")
+            sys.exit(1)
+
+        api_url = "http://localhost:3050/elcyckel/v1/scooters"
+        response = requests.get(api_url)
+
+        if response.status_code == 200:
+            scooters_data = response.json()
+            using_scooters = [
+                scooter for scooter in scooters_data
+                if scooter['scooter_hire'] == 'Activated'
+            ]
+            selected_scooter = next(
+                (scooter for scooter in using_scooters if scooter['scooter_id'] == scooter_id_to_find),
+                None
+            )
+
+            if selected_scooter:
+                scooter = Scooter(
+                    scooter_id=selected_scooter['scooter_id'],
+                    battery_percentage=selected_scooter['battery_level']
+                )
+                scooter.report_position(
+                    latitude=float(selected_scooter['latitude']),
+                    longitude=float(selected_scooter['longitude'])
+                )
+                scooter.start(customer=user_id)
+
+                sim_thread = threading.Thread(target=scooter.simulate_ride)
+                sim_thread.start()
+
+                input("Press Enter to end the ride\n")
+                scooter.stop_simulation = True
+                sim_thread.join()
+
+                scooter.stop()
+        else:
+            print(f"Failed to fetch scooter data. Status code: {response.status_code}")
 
 if __name__ == "__main__":
     main()

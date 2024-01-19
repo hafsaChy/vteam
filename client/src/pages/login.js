@@ -1,4 +1,3 @@
-// Login.js
 import React, { useState, useEffect } from "react";
 import UserAccountInfo from "./user";
 import AdminAccountInfo from "./admin";
@@ -54,26 +53,17 @@ const Login = () => {
     localStorage.removeItem("token");
   };
 
-  const GithubLoginButton = () => (
-    <button onClick={() => window.location.href = 'http://localhost:3050/auth/github'} style={buttonStyle}>
-      Login with GitHub
-    </button>
-  );
-
   return (
     <div className="flex-container">
       <div className="home-body-container">
         {!user ? (
-          <>
-            <LoginForm
-              email={email}
-              password={password}
-              setEmail={setEmail}
-              setPassword={setPassword}
-              handleLogin={handleLogin}
-            />
-            <GithubLoginButton />
-          </>
+          <LoginForm
+            email={email}
+            password={password}
+            setEmail={setEmail}
+            setPassword={setPassword}
+            handleLogin={handleLogin}
+          />
         ) : (
           <AccountInfo user={user} handleLogout={handleLogout} />
         )}

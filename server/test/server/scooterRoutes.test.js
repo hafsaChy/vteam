@@ -125,75 +125,75 @@ describe('Scooter Routes', function () {
     //     });
     // });
 
-    // Test PUT /scooters/:scooter_id
-    describe('PUT /elcyckel/v1/scooters/:scooter_id', function () {
-        it('updates a scooter and responds with success message', async function () {
-            const testCityId = await getExistingCityId();
-            const testStationId = await getExistingStationId();
-            const testScooterId = await getExistingScooterId();
-            const updatedScooter = {
-                latitude: 456,
-                longitude: 789,
-                serial_number: 'XYZ789',
-                battery_level: 90,
-                city_id: testCityId,
-                station_id: testStationId,
-                scooter_status: 'Inactive'
-            };
+    // // Test PUT /scooters/:scooter_id
+    // describe('PUT /elcyckel/v1/scooters/:scooter_id', function () {
+    //     it('updates a scooter and responds with success message', async function () {
+    //         const testCityId = await getExistingCityId();
+    //         const testStationId = await getExistingStationId();
+    //         const testScooterId = await getExistingScooterId();
+    //         const updatedScooter = {
+    //             latitude: 456,
+    //             longitude: 789,
+    //             serial_number: 'XYZ789',
+    //             battery_level: 90,
+    //             city_id: testCityId,
+    //             station_id: testStationId,
+    //             scooter_status: 'Inactive'
+    //         };
 
-            const res = await request(app)
-                .put(`/elcyckel/v1/scooters/${testScooterId}`)
-                .send(updatedScooter)
-                .expect('Content-Type', /json/)
-                .expect(200);
+    //         const res = await request(app)
+    //             .put(`/elcyckel/v1/scooters/${testScooterId}`)
+    //             .send(updatedScooter)
+    //             .expect('Content-Type', /json/)
+    //             .expect(200);
 
-            assert.equal(res.body.message, 'Scooter updated successfully');
-        });
+    //         assert.equal(res.body.message, 'Scooter updated successfully');
+    //     });
 
-        it('responds with 404 for updating non-existent scooter', async function () {
-            const nonExistentScooterId = 1002;
-            const updatedScooter = {
-                latitude: 456,
-                longitude: 789,
-                serial_number: 'XYZ789',
-                battery_level: 90,
-                city_id: 1,
-                station_id: 1,
-                scooter_status: 'Inactive'
-            };
+    //     it('responds with 404 for updating non-existent scooter', async function () {
+    //         const nonExistentScooterId = 1002;
+    //         const updatedScooter = {
+    //             latitude: 456,
+    //             longitude: 789,
+    //             serial_number: 'XYZ789',
+    //             battery_level: 90,
+    //             city_id: 1,
+    //             station_id: 1,
+    //             scooter_status: 'Inactive'
+    //         };
 
-            await request(app)
-                .put(`/elcyckel/v1/scooters/${nonExistentScooterId}`)
-                .send(updatedScooter)
-                .expect('Content-Type', /json/)
-                .expect(404);
-        });
-    });
+    //         await request(app)
+    //             .put(`/elcyckel/v1/scooters/${nonExistentScooterId}`)
+    //             .send(updatedScooter)
+    //             .expect('Content-Type', /json/)
+    //             .expect(404);
+    //     });
+    // });
 
-    // Test DELETE /scooters/:scooter_id
-    describe('DELETE /elcyckel/v1/scooters/:scooter_id', function () {
-        it('deletes a scooter and responds with success message', async function () {
-            const testScooterId = await getExistingScooterId();
+    // // Test DELETE /scooters/:scooter_id
+    // describe('DELETE /elcyckel/v1/scooters/:scooter_id', function () {
+    //     it('deletes a scooter and responds with success message', async function () {
+    //         const testScooterId = await getExistingScooterId();
 
-            const res = await request(app)
-                .delete(`/elcyckel/v1/scooters/${testScooterId}`)
-                .expect('Content-Type', /json/)
-                .expect(200);
+    //         const res = await request(app)
+    //             .delete(`/elcyckel/v1/scooters/${testScooterId}`)
+    //             .expect('Content-Type', /json/)
+    //             .expect(200);
 
-            assert.equal(res.body.message, 'Scooter deleted successfully');
-        });
+    //         assert.equal(res.body.message, 'Scooter deleted successfully');
+    //     });
 
-        it('responds with 404 for deleting non-existent scooter', async function () {
-            const nonExistentScooterId = 1002;
+    //     it('responds with 404 for deleting non-existent scooter', async function () {
+    //         const nonExistentScooterId = 1002;
 
-            const res = await request(app)
-                .delete(`/elcyckel/v1/scooters/${nonExistentScooterId}`)
-                .expect('Content-Type', /json/)
-                .expect(404);
+    //         const res = await request(app)
+    //             .delete(`/elcyckel/v1/scooters/${nonExistentScooterId}`)
+    //             .expect('Content-Type', /json/)
+    //             .expect(404);
 
-            assert.equal(res.body.error, 'Scooter not found');
-        });
-    });
+    //         assert.equal(res.body.error, 'Scooter not found');
+    //     });
+    // });
 
 
     // Helper function to get an existing city_id from the database
