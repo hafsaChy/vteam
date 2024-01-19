@@ -22,7 +22,7 @@ Elcyckel consists of the following components:
 
 - **Server:**
   - [Documentation](server/README.md)
-  - Technologies: Node.js, Express, MySQL
+  - Technologies: Node.js, Express, MariaDB
 
 - **Client:**
   - [Documentation](client/README.md)
